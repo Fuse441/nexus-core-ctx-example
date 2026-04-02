@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nexus-core-ctx-example
+  namespace: thanos
+spec:
+  type: ClusterIP
+  selector:
+    app: nexus-core-ctx-example # ✅ ต้องตรงกับ deployment
+
+  ports:
+    - name: http # ✅ ต้องมีชื่อ
+      protocol: TCP
+      port: 80 # port ที่ service เปิด
+      targetPort: 3000 # port ของ container

@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexus-core-ctx-example
+  namespace: thanos
+  labels:
+    app: nexus-core-ctx-example
+spec:
+  replicas: 2 # 🔥 เพิ่ม HA
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: nexus-core-ctx-example
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: nexus-core-ctx-example
+    spec:
+      containers:
+        - name: nexus-core-ctx-example
+          image: nexus-core-ctx-example:1.0.0
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 3000
+              name: http
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 300m
+              memory: 256Mi
+
+          # 🔥 Health check (สำคัญมาก)
+          livenessProbe:
+            httpGet:
+              path: /_status/healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /_status/healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: nexus-core-ctx-example
+                  key: DB_HOST
+
+            # 🔥 แนะนำเพิ่ม
+            - name: NODE_ENV
+              value: "production"
+
+      # ❌ เอา hostPath ออก (ไม่ควรใช้ใน production)
+      # volumes:
+      # - name: localtime
+
+      restartPolicy: Always
