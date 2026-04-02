@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: nexus-core-ctx-example
-          image: ghcr.io/Fuse441/nexus-core-ctx-example:v1
+          image: ghcr.io/fuse441/nexus-core-ctx-example:db5ff0431a25de5e0e05e3316a2c68dde4866bcf
           imagePullPolicy: IfNotPresent
 
           ports:
