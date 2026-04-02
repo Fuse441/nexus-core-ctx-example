@@ -58,13 +58,6 @@ spec:
             failureThreshold: 3
 
           env:
-            - name: DB_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: nexus-core-ctx-example
-                  key: DB_HOST
-
-            # 🔥 แนะนำเพิ่ม
             - name: NODE_ENV
               value: "production"
 
