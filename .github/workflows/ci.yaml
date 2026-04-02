@@ -12,7 +12,7 @@ jobs:
 
     permissions:
       contents: read
-      packages: write # 🔥 สำคัญสำหรับ GHCR
+      packages: write
 
     steps:
       - name: Checkout code
@@ -28,11 +28,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/${{ github.repository_owner }}/nexus-core-ctx-example
+      - name: Set lowercase repository
+        run: echo "REPO_LC=$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Build and Push
         uses: docker/build-push-action@v5
@@ -40,5 +37,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ghcr.io/${{ env.REPO_LC }}:latest
+            ghcr.io/${{ env.REPO_LC }}:${{ github.sha }}
+
+      - name: Done
+        run: echo "Docker build and push success 🚀"
