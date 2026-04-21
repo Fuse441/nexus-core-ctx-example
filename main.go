@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 )
-
 // response struct
 type Message struct {
 	Message string `json:"message"`
@@ -15,7 +14,7 @@ func main() {
 
 	// route: /
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, World! My name is SMP-Context 🚀")
+		fmt.Println(w, "Hello, World! My name is SMP-Context 🚀")
 	})
 
 	// route: /health
